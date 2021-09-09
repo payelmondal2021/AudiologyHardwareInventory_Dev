@@ -1,5 +1,5 @@
 
-/**//*Using testing purpose ..not using this js file*//**//**/
+/**//*Using testing purpose ..not using this js file..*//**//**/
 
 import { extend } from 'jquery';
 import React, { Component } from 'react';

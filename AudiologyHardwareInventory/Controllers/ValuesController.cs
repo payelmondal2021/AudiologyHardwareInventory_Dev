@@ -11,6 +11,6 @@ namespace AudiologyHardwareInventory.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        //testing;
+        //testing
     }
 }

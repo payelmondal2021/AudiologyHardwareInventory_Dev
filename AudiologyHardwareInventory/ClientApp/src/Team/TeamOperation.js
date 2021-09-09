@@ -1,10 +1,11 @@
 ﻿import React, { Component } from 'react';
-import ReactTable from "react-table";
+import ReactTable from 'react-table-6';
 import REACTDOM from "react-dom";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import './DefaultReactTable.css';
 import { PopupForm } from './PopUpForm.js';
-import axios from 'axios';
+import Enumerable from 'linq';
+import Swal from 'sweetalert2';
 
 export class TeamOperation extends Component {
     static displayName = TeamOperation.name;
@@ -17,7 +18,7 @@ export class TeamOperation extends Component {
                 value2: "",
                 value3: ""
             },
-            teamInfo: [], loading: true, modal: false, clicked: false, update: '', teamId: '', Button: 'Delete',
+            teamInfo: [], loading: true, modal: false, clicked: false, update: '', teamId: '', Button: 'Delete',maxTeamId:0,
             fade: false, teamValue: '', descriptionValue: '', memberValue: '', value2: '', message: 'Loading....', visible: false
         };
 
@@ -43,12 +44,13 @@ export class TeamOperation extends Component {
 
 
             let team = {
-                TeamId: 18,
+                TeamId: this.state.maxTeamId,
                 TeamName: teamName,
                 Description: description,
                 TeamMembers: teamMembers
             };
-            fetch('/api/Team', {
+            /*fetch('/api/Team/Create', {*/
+            fetch('api/Team/Create', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -57,13 +59,24 @@ export class TeamOperation extends Component {
                 body: JSON.stringify(
                     team
                 )
-            }).then(r => r.json()).then(res => {
-                if (res) {
-                    this.setState({ message: 'Team Added Successfully' });
-                }
-            });
+            }).then(response => response.json())
+                .then(
+
+                    Swal.fire({
+                        title: 'Successfully Saved the data',
+                        confirmButtonText: 'OK',
+                        icon: 'success'
+
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.setState({ modal: !this.state.modal, });
+                            window.location.reload();
+                        }
+                    })
+                );
         }
         if (this.state.update == true) {
+            this.setState({ update: false });
             let team =
             {
                 TeamId: this.state.teamId,
@@ -81,14 +94,24 @@ export class TeamOperation extends Component {
                     team
                 )
 
-            }).then(res => {
-                if (res) {
-                    this.setState({ message: 'Team details updated successfully' });
-                    console.log("updated");
-                    //window.location("api/Team");
-                }
-            });
+            }).then(response => response.json())
+                .then(
+
+                    Swal.fire({
+                        title: 'Successfully Saved the data',
+                        confirmButtonText: 'OK',
+                        icon: 'success'
+
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            this.setState({ modal: !this.state.modal, });
+                            window.location.reload();
+                        }
+                    })
+                );
         }
+        event.preventDefault();
+       
     }
 
     componentDidMount() {
@@ -129,11 +152,10 @@ export class TeamOperation extends Component {
                             team
                         )
 
-                    }).then(r => r.json()).then(res => {
-                        if (res) {
-                            this.setState({ message: 'Deleted' });
-                        }
-                    });
+                    }).then(response => response.json())
+                        .then(
+                            window.location.reload()
+                        );
 
                 }
                 //if (
@@ -166,7 +188,7 @@ export class TeamOperation extends Component {
             <div><br></br>
                 <h2 id="tabelLabel" >Manage Team</h2><br></br>
                 <div>
-                    <Button color='success' onClick={this.toggle}>Add Team</Button>                                    
+                    <Button color='info' onClick={this.toggle}>Add Team</Button>                                    
                     <PopupForm data={this.state} toggle={this.toggle} handleSubmit={this.handleSubmit} />                 
                 </div><br></br>
                 <p><em>{this.state.message}</em></p>
@@ -202,12 +224,12 @@ export class TeamOperation extends Component {
                                         accessor: "Button",
                                         Cell: ({ row }) => (
                                             <div>
-                                                <button data-id="editButtonId">
+                                                <Button color='info' data-id="editButtonId">
                                                     Edit
-                                                </button> {' '}
-                                                <button data-id="deleteButtonId">
+                                                </Button> {' '}
+                                                <Button color='info' data-id="deleteButtonId">
                                                     Delete
-                                                </button>
+                                                </Button>
                                             </div>
                                         )
 
@@ -226,6 +248,12 @@ export class TeamOperation extends Component {
     async populateTeamData() {
         const response = await fetch('api/Team');
         const data = await response.json();
-        this.setState({ teamInfo: data, message: '' });
+        if (data.length != 0) {
+            const teamId = Enumerable.from(data)
+                .max(s => s.teamId);
+            this.setState({ teamInfo: data, message: '', update: false, maxTeamId: teamId + 1 });
+        }
+        else
+            this.setState({ teamInfo: data, message: '', maxTeamId: 0, update: false });
     }
 }

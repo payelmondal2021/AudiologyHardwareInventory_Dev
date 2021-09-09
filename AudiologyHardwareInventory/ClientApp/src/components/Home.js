@@ -3,9 +3,13 @@
 
 import { extend } from 'jquery';
 import React, { Component } from 'react';
+/*import { useHistory } from "react-router-dom";*/
 
 export class test extends Component{
 
+                            ////const history = useHistory();
+                            ////let path = '/chipset';
+                            ////history.push(path);
 
 }
 export class Home extends Component {

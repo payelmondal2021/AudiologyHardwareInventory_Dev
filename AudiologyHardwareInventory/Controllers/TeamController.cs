@@ -12,6 +12,7 @@ using System.Net.Http;
 
 namespace AudiologyHardwareInventory.Controllers
 {
+ 
     [Route("api/[controller]")]
     [ApiController]
     public class TeamController : Controller
@@ -33,24 +34,24 @@ namespace AudiologyHardwareInventory.Controllers
         }
 
         [HttpPost]
-        //[Route("save/{team}")]
-        public void Post([FromBody] Team team)
+        [Route("Create")]
+        public void CreateTeam([FromBody] Team team)
         {
-            var maxId = _team.DisplayTeamStatus().Max(a => a.TeamId);
-            team.TeamId = maxId + 1;
+            //var maxId = _team.DisplayTeamStatus().Max(a => a.TeamId);
+            //team.TeamId = maxId + 1;
              _team.InsertNewTeam(team);
         }
 
         [HttpPost]
         [Route("Update")]
-        public void Update([FromBody] Team team)
+        public void UpdateTeam([FromBody] Team team)
         {
             _team.UpdateTeam(team);
         }
         
         [HttpPost]
         [Route("Delete")]
-        public void Delete([FromBody] Team team)
+        public void DeleteTeam([FromBody] Team team)
         {
             _team.DeleteTeam(team);
         }

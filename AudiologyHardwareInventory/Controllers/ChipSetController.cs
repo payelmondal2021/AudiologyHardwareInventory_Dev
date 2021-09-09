@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using AudiologyHardwareInventory.Models;
 using AudiologyHardwareInventory.Interface;
 using System.Net.Http;
+using AudiologyHardwareInventory.Facade;
 
 namespace AudiologyHardwareInventory.Controllers
 {
@@ -18,6 +19,7 @@ namespace AudiologyHardwareInventory.Controllers
     {
         private readonly ILogger<TeamController> _logger;
         private readonly IChipSet _chipSet;
+       
 
         public ChipSetController(ILogger<TeamController> logger, IChipSet _chipSet)
         {
@@ -33,27 +35,29 @@ namespace AudiologyHardwareInventory.Controllers
         }
 
         [HttpPost]
-        //[Route("save/{team}")]
-        public void Post([FromBody] ChipSet chipset)
+        [Route("Create")]
+        public void CreateChipSet([FromBody] ChipSet chipset)
         {
-            if (_chipSet.DisplayChipSet().Count() != 0)
-            {
-                var maxId = _chipSet.DisplayChipSet().Max(a => a.ChipSetId);
-                chipset.ChipSetId = maxId + 1;
-            }          
+            //if (_chipSet.DisplayChipSet().Count() != 0)
+            //{
+            //    var maxId = _chipSet.DisplayChipSet().Max(a => a.ChipSetId);
+            //    chipset.ChipSetId = maxId + 1;
+            //}
+
             _chipSet.InsertChipSet(chipset);
         }
 
         [HttpPost]
         [Route("Update")]
-        public void Update([FromBody] ChipSet chipset)
+        public void UpdateChipSet([FromBody] ChipSet chipset)
         {
             _chipSet.UpdateChipSet(chipset);
+           // return Json("Done");
         }
 
         [HttpPost]
         [Route("Delete")]
-        public void Delete([FromBody] ChipSet chipSet)
+        public void DeleteChipSet([FromBody] ChipSet chipSet)
         {
             _chipSet.DeleteChipSet(chipSet);
         }

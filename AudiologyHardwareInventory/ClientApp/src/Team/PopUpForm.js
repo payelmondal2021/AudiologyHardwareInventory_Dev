@@ -1,9 +1,9 @@
 ﻿import React, { Component } from 'react';
-import ReactTable from "react-table";
+import ReactTable from 'react-table-6';
 import REACTDOM from "react-dom";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import './DefaultReactTable.css';
-import axios from 'axios';
+
 
 export class PopupForm extends Component {
     static displayName = PopupForm.name;
